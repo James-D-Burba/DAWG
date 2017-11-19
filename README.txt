@@ -1,0 +1,1 @@
+This is an implementation of a directed acyclic word graph (DAWG) in Java.
