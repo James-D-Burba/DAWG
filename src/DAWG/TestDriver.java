@@ -4,9 +4,9 @@ public class TestDriver {
 
     public static void main(String[] args) {
         new DictionaryTester
-                ("dictionaries/smallWordList.txt",
+                ("dictionaries/bigWordList.txt",
                         "testOutput",
-                        DAWG.LIST)
+                        DAWG.ARRAY)
                 .run();
     }
 

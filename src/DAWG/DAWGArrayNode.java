@@ -1,7 +1,6 @@
 package DAWG;
 
-import java.io.*;
-import java.util.*;
+import java.util.Iterator;
 
 public class DAWGArrayNode implements DAWGNode {
 
@@ -79,28 +78,20 @@ public class DAWGArrayNode implements DAWGNode {
     public boolean equals(Object o) {
 
         if (o == null) return false;
-        if (!(o instanceof DAWGArrayNode)) return false;
+        if (!(o instanceof DAWGNode)) return false;
 
-        DAWGArrayNode that = (DAWGArrayNode) o;
+        DAWGNode that = (DAWGNode) o;
 
-        if (this.terminus != that.terminus) return false;
+        if (this.terminus != that.isTerminal()) return false;
 
         if (this.numChildren() != that.numChildren()) return false;
 
-        for (int i = 0; i < childEdges.length; i++) {
-
-            if (childEdges[i] == 0) break;
-
-            if (that.getChild(childEdges[i]) == null) return false;
-
+        for (DAWGEdge child : this) {
+            if (that.getChild(child.edge) == null) return false;
         }
 
-        for (int i = 0; i < childEdges.length; i++) {
-
-            if (childEdges[i] == 0) break;
-
-            if (!childNodes[i].equals(that.getChild(childEdges[i]))) return false;
-
+        for (DAWGEdge child : this) {
+            if (!child.node.equals(that.getChild(child.edge))) return false;
         }
 
         return true;

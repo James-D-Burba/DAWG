@@ -67,4 +67,28 @@ public class DAWGListNode implements DAWGNode {
     public Iterator<DAWGEdge> iterator() {
         return children.iterator();
     }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (o == null) return false;
+        if (!(o instanceof DAWGNode)) return false;
+
+        DAWGNode that = (DAWGNode) o;
+
+        if (this.terminus != that.isTerminal()) return false;
+
+        if (this.numChildren() != that.numChildren()) return false;
+
+        for (DAWGEdge child : children) {
+            if (that.getChild(child.edge) == null) return false;
+        }
+
+        for (DAWGEdge child : children) {
+            if (!child.node.equals(that.getChild(child.edge))) return false;
+        }
+
+        return true;
+    }
+
 }
