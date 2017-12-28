@@ -5,12 +5,22 @@ import java.util.*;
 
 public class DAWG {
 
+    public static final int ARRAY = 0;
+    public static final int LIST = 1;
+
     private DAWGNode root;
+    private int nodeType;
+
+    public DAWG(List<String> words) {
+        this(words, ARRAY);
+    }
 
     //builds the dictionary from a list of words
-    public DAWG(List<String> words) {
+    public DAWG(List<String> words, int nodeType) {
 
-        root = new DAWGArrayNode();
+        this.nodeType = nodeType;
+
+        root = newNode();
 
         int counter = 1;
 
@@ -39,7 +49,7 @@ public class DAWG {
             }
 
             while (currentSuffix.length() > 0) {
-                DAWGNode nextState = new DAWGArrayNode();
+                DAWGNode nextState = newNode();
                 currentState.setChild(currentSuffix.charAt(0), nextState);
                 lastEdges.put(currentState, currentSuffix.charAt(0));
                 currentState = nextState;
@@ -68,6 +78,12 @@ public class DAWG {
     }
 
     public DAWG(InputStream input) throws InvalidDictionaryFormatException {
+        this(input, ARRAY);
+    }
+
+    public DAWG(InputStream input, int nodeType) throws InvalidDictionaryFormatException {
+
+        this.nodeType = nodeType;
 
         Scanner scanner = new Scanner(new BufferedReader(new InputStreamReader(input)));
         scanner.useDelimiter("");
@@ -84,7 +100,7 @@ public class DAWG {
 
         int numChildren = buildNextInt(scanner);
 
-        root = new DAWGArrayNode(numChildren, false);
+        root = newNode(numChildren, false);
 
         registry.put(rootId, root);
 
@@ -114,7 +130,7 @@ public class DAWG {
                 int newNodeID = buildNextInt(scanner);
                 boolean newNodeTerminus = scanner.next().charAt(0) == '*';
                 int newNodeNumChildren = buildNextInt(scanner);
-                DAWGNode newChild = new DAWGArrayNode(newNodeNumChildren, newNodeTerminus);
+                DAWGNode newChild = newNode(newNodeNumChildren, newNodeTerminus);
                 registry.put(newNodeID, newChild);
                 currentNode.setChild(letter, newChild);
                 buildHelper(newChild, registry, scanner);
@@ -262,6 +278,28 @@ public class DAWG {
 
         return word.toString();
 
+    }
+
+    DAWGNode newNode() {
+        switch (nodeType) {
+            case ARRAY:
+                return new DAWGArrayNode();
+            case LIST:
+                return new DAWGListNode();
+            default:
+                return new DAWGArrayNode();
+        }
+    }
+
+    DAWGNode newNode(int numChildren, boolean terminus) {
+        switch (nodeType) {
+            case ARRAY:
+                return new DAWGArrayNode(numChildren, terminus);
+            case LIST:
+                return new DAWGListNode(terminus);
+            default:
+                return new DAWGArrayNode(numChildren, terminus);
+        }
     }
 
 }

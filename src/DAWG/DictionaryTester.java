@@ -7,9 +7,7 @@ public class DictionaryTester implements Runnable {
 
     private static String OUTPUT_DIR = "graphs/";
 
-    public enum Type {ARRAY}
-
-    private Type type;
+    private int nodeType;
 
     private DAWG dictionary;
     private List<String> wordList;
@@ -17,11 +15,11 @@ public class DictionaryTester implements Runnable {
     private String outputFileName;
     private String inputFileName;
 
-    public DictionaryTester(String inputFileName, String outputFileName, Type type) {
+    public DictionaryTester(String inputFileName, String outputFileName, int nodeType) {
 
         this.inputFileName = inputFileName;
         this.outputFileName = outputFileName;
-        this.type = type;
+        this.nodeType = nodeType;
 
     }
 
@@ -41,33 +39,25 @@ public class DictionaryTester implements Runnable {
         wordList = buildWordList();
 
         System.out.println("Testing dictionary....");
-        dictionary = buildFromList(wordList, type);
+        dictionary = buildFromList(wordList, nodeType);
         testWantedWords();
         testUnwantedWords();
         countNodes(dictionary);
 
         writeToFile();
-        dictionary = buildFromFile(outputFileName, type);
+        dictionary = buildFromFile(outputFileName, nodeType);
         testWantedWords();
         testUnwantedWords();
         countNodes(dictionary);
     }
 
-    private DAWG buildFromList(List<String> words, Type type) {
+    private DAWG buildFromList(List<String> words, int nodeType) {
 
         System.out.println("Building graph from word list...");
 
         long startTime = System.nanoTime();
 
-        DAWG dictionary;
-        switch (type) {
-            case ARRAY:
-                dictionary = new DAWG(words);
-                break;
-            default:
-                dictionary = new DAWG(words);
-                break;
-        }
+        DAWG dictionary = new DAWG(words, nodeType);
 
         long endTime = System.nanoTime();
         double totalTime = (double) (endTime - startTime) / 1000000000;
@@ -91,22 +81,14 @@ public class DictionaryTester implements Runnable {
 
     }
 
-    private DAWG buildFromFile(String fileName, Type type) throws FileNotFoundException, InvalidDictionaryFormatException {
+    private DAWG buildFromFile(String fileName, int nodeType) throws FileNotFoundException, InvalidDictionaryFormatException {
 
         System.out.println("Building graph from file " + OUTPUT_DIR + fileName);
         long startTime = System.nanoTime();
 
         InputStream inputStream = new FileInputStream(new File(OUTPUT_DIR + fileName));
 
-        DAWG dictionary;
-
-        switch (type) {
-            case ARRAY:
-                dictionary = new DAWG(inputStream);
-                break;
-            default:
-                dictionary = new DAWG(inputStream);
-        }
+        DAWG dictionary = new DAWG(inputStream, nodeType);
 
         long endTime = System.nanoTime();
         double totalTime = (double) (endTime - startTime) / 1000000000;
