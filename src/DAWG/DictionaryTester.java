@@ -11,7 +11,7 @@ public class DictionaryTester implements Runnable {
 
     private Type type;
 
-    private DictionaryNode dictionary;
+    private DAWG dictionary;
     private List<String> wordList;
 
     private String outputFileName;
@@ -53,19 +53,19 @@ public class DictionaryTester implements Runnable {
         countNodes(dictionary);
     }
 
-    private DictionaryNode buildFromList(List<String> words, Type type) {
+    private DAWG buildFromList(List<String> words, Type type) {
 
         System.out.println("Building graph from word list...");
 
         long startTime = System.nanoTime();
 
-        DictionaryNode dictionary;
+        DAWG dictionary;
         switch (type) {
             case ARRAY:
-                dictionary = new DictionaryArrayNode(words);
+                dictionary = new DAWG(words);
                 break;
             default:
-                dictionary = new DictionaryArrayNode(words);
+                dictionary = new DAWG(words);
                 break;
         }
 
@@ -91,21 +91,21 @@ public class DictionaryTester implements Runnable {
 
     }
 
-    private DictionaryNode buildFromFile(String fileName, Type type) throws FileNotFoundException, InvalidDictionaryFormatException {
+    private DAWG buildFromFile(String fileName, Type type) throws FileNotFoundException, InvalidDictionaryFormatException {
 
         System.out.println("Building graph from file " + OUTPUT_DIR + fileName);
         long startTime = System.nanoTime();
 
         InputStream inputStream = new FileInputStream(new File(OUTPUT_DIR + fileName));
 
-        DictionaryNode dictionary;
+        DAWG dictionary;
 
         switch (type) {
             case ARRAY:
-                dictionary = new DictionaryArrayNode(inputStream);
+                dictionary = new DAWG(inputStream);
                 break;
             default:
-                dictionary = new DictionaryArrayNode(inputStream);
+                dictionary = new DAWG(inputStream);
         }
 
         long endTime = System.nanoTime();
@@ -116,7 +116,7 @@ public class DictionaryTester implements Runnable {
 
     }
 
-    private void countNodes(DictionaryNode dictionary) {
+    private void countNodes(DAWG dictionary) {
         System.out.println("Counting graph nodes...");
         long startTime = System.nanoTime();
         EdgeAndNodeCounter counter = dictionary.countEdgesAndNodes();
