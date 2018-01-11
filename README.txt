@@ -1,1 +1,3 @@
-This is an implementation of a directed acyclic word graph (DAWG) in Java.
+This is an implementation of a directed acyclic word graph (DAWG) in Java. It uses the algorithm outlined in "Incremental Construction of Minimal Acyclic Finite-State Automata" (https://www.mitpressjournals.org/doi/pdfplus/10.1162/089120100561601) to create a trie-like structure where all duplicate suffixes are combined.
+
+The DAWG saves space, memory, and search time (compared to a list or array of words). This implementation of the DAWG can also serialize a graph and read it back in later, which is useful because constructing the grtaph from a list of words takes a significant amount of time.
